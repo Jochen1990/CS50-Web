@@ -1,0 +1,27 @@
+body {
+    margin: 10;
+    padding: 10;
+}
+
+.noLinkEffect, .noLinkEffect:hover {
+    text-decoration: none;
+    color: inherit;
+}
+
+.menu-arrow {
+    width: 10;
+    height: 10;
+    border-left: 40px solid transparent;
+    border-right: 40px solid transparent;
+    border-top: 40px solid #365c24;
+    margin: auto;
+}
+
+.col-centered {
+    float: none;
+    margin: 0 auto;
+}
+
+.card {
+  margin-bottom: 20px;
+}
