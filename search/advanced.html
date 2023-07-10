@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Search</title>
+        <h3 style="text-align: right;">
+            <a href="index.html">Google Search</a>
+        </h3>
+        <style>
+            .button {
+              background-color: #4285F4;
+              border: none;
+              color: #FFFFFF;
+              padding: 20px;
+              text-align: center;
+              text-decoration: none;
+              display: inline-block;
+              font-size: 16px;
+              margin: 4px 2px;
+              cursor: pointer;
+              border-radius: 12px;
+            }
+            .button4 {border-radius: 12px;}
+        </style>
+    </head>
+    <body>
+        <h1 style="color:#4285F4";>Google Advanced Search</h1>
+        <form method="GET" action="https://www.google.com/search?as_q&as_epq&as_oq&as_eq">
+            <div>
+            <input type="text" name="as_q" button class="button4">
+            <a>Find pages with… “all these words:”</a>
+            </div>
+            <div>
+            <input type="text" name="as_epq" button class="button4">
+            <a>Find pages with… “this exact word or phrase:”</a>
+            </div>
+            <div>
+            <input type="text" name="as_oq" button class="button4">
+            <a>Find pages with… “any of these words:”</a>
+            </div>
+            <div>
+            <input type="text" name="as_eq" button class="button4">
+            <a>Find pages with… “none of these words:”</a>
+            </div>
+            <div>
+            <input type="submit" value="Advanced Search" button class="button">
+            </div>
+        </form>
+    </body>
+</html>
