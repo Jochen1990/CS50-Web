@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block body %}
+{% for survey in surveys %}
+    <form method="post" name="Survey" onsubmit="" action="">
+    {% csrf_token %}
+    {% if survey.archived != True %}
+    <div class="survey">
+        <h3><input type="hidden" name="question" value="{{ survey.question }}"> {{ survey.question }}</h3><br>
+        <h4><input type="radio" name="radAnswer" value="{{ survey.answer1 }}"> {{ survey.answer1 }}</input></h4>
+        <h4><input type="radio" name="radAnswer" value="{{ survey.answer2 }}"> {{ survey.answer2 }}</input></h4>
+        {% if survey.answer3 != "" %}
+            <h4><input type="radio" name="radAnswer" value="{{ survey.answer3 }}"> {{ survey.answer3 }}</input></h4>
+        {% endif %}
+        {% if survey.answer4 != "" %}
+            <h4><input type="radio" name="radAnswer" value="{{ survey.answer4 }}"> {{ survey.answer4 }}</input></h4>
+        {% endif %}
+        {% if survey.question in questions_all %}
+            <h4 style="color: green">Already voted!</h4>
+        {% else %}
+            {% csrf_token %}
+                <button name="submit" value="{{ survey.question }}" class="btn btn-primary">Submit</button>
+            {% csrf_token %}
+        {% endif %}
+        {% if request.user.id == survey.user_id %}
+        {% csrf_token %}
+            <button name="close" value="{{ survey.id }}" class="btn btn-danger">Close</button>
+            {% csrf_token %}
+        {% endif %}
+        {% for vote in votes %}
+            {% ifchanged %}
+            {% if survey.question not in questions %}
+                <p><h4>Votes: 0</h4></p>
+            {% endif %}
+            {% endifchanged %}
+            {% if survey.question == vote.question %}
+                <p><h4>Votes: {{ vote.c }}</h4></p>
+            {% endif %}
+        {% endfor %}
+        </div>
+    {% endif %}
+{% endfor %}
+{% endblock %}

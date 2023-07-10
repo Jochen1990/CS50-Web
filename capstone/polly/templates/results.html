@@ -1,0 +1,29 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block body %}
+{% for list in lists %}
+    {% csrf_token %}
+    <div class="survey">
+        <h3>{{ list.question }}</h3><br>
+        <h4>1. {{ list.answer1 }}</h4>
+        <h4>2. {{ list.answer2 }}</h4>
+        {% if survey.answer3 != "" %}
+            <h4>3. {{ list.answer3 }}</h4>
+        {% endif %}
+        {% if survey.answer4 != "" %}
+            <h4>4. {{ list.answer4 }}</h4>
+        {% endif %}
+        {% for vote in votes %}
+            {% ifchanged %}
+            {% if list.question not in questions %}
+                <p><h4>Votes: 0</h4></p>
+            {% endif %}
+            {% endifchanged %}
+            {% if list.question == vote.question %}
+                <p><h4>Votes: {{ vote.c }}</h4></p>
+            {% endif %}
+        {% endfor %}
+        </div>
+{% endfor %}
+{% endblock %}

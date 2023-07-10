@@ -1,0 +1,16 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block body %}
+<h1>Profile</h1>
+<h3>Below, you find all your created surveys</h3>
+
+    {% for survey in surveys %}
+        {% if request.user.id == survey.user.id %}
+            <div class="survey">
+                    <h3>{{ survey.question }}</h3><br>
+            </div>
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+

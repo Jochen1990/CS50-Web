@@ -1,0 +1,21 @@
+{% extends "layout.html" %}
+{% load static %}
+
+{% block body %}
+<h1>About Polly</h1>
+<p class="font-weight-bold">
+Polly is a simple survey web app which allows a user to create a survey with up to 4 possible answers 
+(and a minimum of two answers).</p> 
+<p class="font-weight-bold">Once the survey is created, it appears under 'all surveys'. Also, it 
+is added to your profile, so you can see which surveys you have created in total.</p>
+<p class="font-weight-bold">
+The link 'all surveys' takes you to a route which displays all surveys created by you or other users.
+A user is able to vote on each survey only once. The number of total votes/voters, is displayed under 
+each survey.</p>
+<p class="font-weight-bold">
+Once the author of the survey decides to close the survey (and only he or she is capable to close the survey), 
+the survey can be reached via the route 'closed surveys - results'.</p>
+<p class="font-weight-bold">
+There, you can see all closed surveys along their number of total votes and the respective results.</p>
+
+{% endblock %}

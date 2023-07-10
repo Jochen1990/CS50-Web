@@ -1,0 +1,8 @@
+.survey{
+    border: 5px solid grey;
+    display: center;
+    justify-content: center;
+    flex-direction: column;
+    box-sizing: border-box;
+    margin: 5px 20px;
+}
