@@ -1,0 +1,158 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<script>
+  function getCookie(name) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${name}=`);
+    if(parts.length == 2) return parts.pop().split(";").shift();
+  }
+
+  function submit(id) {
+    const textareaValue = document.getElementById(`textarea_${id}`).value;
+    const content = document.getElementById(`content_${id}`);
+
+    fetch(`/edit/${id}`, {
+      method: "POST",
+      headers: {"Content-type": "application/json", "X-CSRFToken": getCookie("csrftoken")},
+      body: JSON.stringify({
+        content: textareaValue
+      })
+    })
+    .then(response => response.json())
+    .then(result => 
+      content.innerHTML = result.data
+    )
+  }
+
+  function like(id) {
+    var like_btn = document.querySelector(`#like-btn-${id}`);
+    var like_ct = document.querySelector(`#like-count-${id}`);
+
+    like_btn.addEventListener('click', () => {
+
+        if (like_btn.style.backgroundColor == 'white') {
+            fetch('/like/' + id, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    like: true
+                })
+              })
+
+            like_btn.style.backgroundColor = 'green';
+              
+            fetch('/like/'+ id, {
+              method: 'GET'})
+            .then(response => response.json())
+            .then(post => {
+                like_ct.innerHTML = "Likes: " + post.likes;
+            });
+        }
+        else {
+            fetch('/like/' + id, {
+                method: 'PUT',
+                body: JSON.stringify({
+                    like: false
+                })
+              });
+              
+            like_btn.style.backgroundColor = 'white';
+
+            fetch('/like/'+`${id}`, {
+              method: 'GET'})
+            .then(response => response.json())
+            .then(post => {
+                like_ct.innerHTML = "Likes: " + post.likes;
+            });
+        }
+        return false;
+    });
+
+}
+</script>
+
+
+
+<h2>All Posts</h2>
+<form action="{% url 'all_posts' %}" method="post">
+    {% csrf_token %}
+
+    <div class="input-group mb-3">
+        <textarea name="post" class="form-control" rows="8" cols="80" placeholder="Enter your post here"></textarea>
+    </div>
+
+    <input type="submit" class="btn btn-primary" value="Post"><br><br>
+</form><br>
+<div>
+{% for post in page_obj %}
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <b>
+                    <a class="nav-link" href="{% url 'profile' user_id=post.user.id %}"><strong> {{ post.user }}</strong></a>
+                    </b>
+                  <p id="content_{{post.id}}">{{ post.content }}</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">
+                  <b>Time & Date: </b> {{ post.timestamp }} <br />
+                  <div id="like-count-{{post.id}}" class="d-inline-block">Likes: {{ post.likes }}</div>
+                </div>
+                {% if user.is_authenticated %}
+                  {% if user == post.user %}
+                    {% csrf_token %}
+                    <div>
+                      <button name="edit" value="Edit" class="btn btn-primary" data-toggle="modal" data-target="#modal_edit_post_{{ post.id }}">Edit</button>
+                    </div>
+                    <div class="modal fade" tabindex="-1" role="dialog" id="modal_edit_post_{{ post.id }}" aria-labelledby="#modal_edit_post_{{ post.id }}_label" aria-hidden="true">
+                      <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title">Edit</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                              <span aria-hidden="true">&times;</span>
+                            </button>
+                          </div>
+                          <div class="modal-body">
+                            <textarea rows="10" id="textarea_{{ post.id }}" class="form-control" name="content">{{ post.content }}</textarea>
+                          </div>
+                          <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="submit({{ post.id }})" data-dismiss="modal">Save changes</button>
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  {% else %}
+                    <button class="btn btn-outline-dark mr-1" style="background-color:white; border-color: rgb(16, 14, 151);" id="like-btn-{{post.id}}" onclick="like('{{ post.id }}')">Like</button>   
+                  {% endif %}
+                {% endif %}
+            </div>
+            </div>
+          </div>
+    {% endfor %}
+</div>
+
+
+<div class="pagination">
+  <span class="step-links">
+      {% if page_obj.has_previous %}
+          <a href="?page=1">&laquo; first</a>
+          <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span class="current">
+          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+
+      {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}">next</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+      {% endif %}
+  </span>
+</div>
+
+
+{% endblock %}

@@ -1,0 +1,81 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<div class="container"></div>
+<div class="row d-flex justify-content-center">
+{% csrf_token %}
+{% if posts_user in following_ids %}
+  {% for follow in follower_num %}
+    {% if posts_user == follow.user_following %}
+      <h2 class="col-4">Followers: {{ follow.freq }}</h2><br>
+    {% endif %}
+  {% endfor %}
+{% else %}
+  <h2 class="col-4">Followers: 0</h2><br>
+{% endif %}
+
+
+{% if posts_user in follow_ids %}
+  {% for follow in following_num %}
+    {% if posts_user == follow.user %}
+      <h2 class="col-3">Following: {{ follow.follows }}</h2>
+    {% endif %}
+  {% endfor %}
+{% else %}
+  <h2 class="col-3">Following: 0</h2>
+{% endif %}
+</div>
+</div>
+
+<div>
+      {% if follow_button_visible %}
+        {% csrf_token %}
+        <form action="{% url 'profile' user_id=posts_user %}" method="post">
+          {% csrf_token %}
+        <input class="btn btn-primary" type="submit" name="follow-button" value="{{ follow_text }}">
+        </form>
+      {% endif %}
+</div>
+
+
+{% for profile in page_obj %}
+          <div class="card">
+            <div class="card-body">
+              <div class="row">
+                <div class="col-md-6">
+                  <b> {{ profile.user }}</b> <br/><br>
+                  <p> {{ profile.content }}</p>
+                  <p>{{ profile.timestamp }}</p>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-3">
+                  <b></b> {{ profile.following }} <br />
+                  {% if profile.posts != "none" %}
+                    <p class="card-text"><b>Likes:</b> {{ profile.likes }}</p>
+                  {% endif %}
+                </div>
+            </div>
+            </div>
+          </div>
+{% endfor %}
+
+<div class="pagination">
+  <span class="step-links">
+      {% if page_obj.has_previous %}
+          <a href="?page=1">&laquo; first</a>
+          <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+      {% endif %}
+
+      <span class="current">
+          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+      </span>
+
+      {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}">next</a>
+          <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+      {% endif %}
+  </span>
+</div>
+
+{% endblock %}
